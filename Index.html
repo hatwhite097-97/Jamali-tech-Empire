@@ -1,473 +1,622 @@
 <!DOCTYPE html>
-<html lang="sw" class="scroll-smooth">
+<html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JAMALI TECH EMPIRE | The Ultimate System</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="https://i.ibb.co/DHJ1J0bv/upload-1777146471103-c2b3f586-jpg.jpg">
-    
-    <!-- Tailwind CSS & Fonts -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Space Grotesk"', 'sans-serif'],
-                        display:['"Orbitron"', 'sans-serif'],
-                        mono: ['monospace'],
-                    },
-                    colors: {
-                        cyber: {
-                            dark: '#030712',
-                            card: '#0B1120',
-                            neon: '#00FF66',
-                            cyan: '#00E5FF',
-                            red: '#FF003C',
-                            gold: '#FFD700'
-                        }
-                    },
-                    boxShadow: {
-                        'neon': '0 0 15px rgba(0, 255, 102, 0.4)',
-                        'cyan': '0 0 15px rgba(0, 229, 255, 0.4)',
-                        'red': '0 0 20px rgba(255, 0, 60, 0.6)'
-                    },
-                    animation: {
-                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'glitch': 'glitch 2s linear infinite',
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Jamal Tech App</title>
+    <!-- FontAwesome kwa Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        body { background-color: #030712; color: #E2E8F0; overflow-x: hidden; }
-        
-        /* Grid Background & Glass */
-        .bg-cyber-grid {
-            background-size: 30px 30px;
-            background-image: linear-gradient(to right, rgba(0, 255, 102, 0.03) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(0, 255, 102, 0.03) 1px, transparent 1px);
+        :root {
+            --primary-blue: #0056b3;
+            --light-blue: #e6f2ff;
+            --white: #ffffff;
+            --red: #ff4d4d;
+            --text-dark: #333333;
+            --gray: #f4f7f6;
+            /* Cyber Colors */
+            --cyber-cyan: #00ffcc;
+            --cyber-pink: #ff00ff;
+            --cyber-blue: #0066ff;
         }
-        .glass-dark { background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 255, 102, 0.1); }
-        .glass-sidebar { background: rgba(11, 17, 32, 0.95); backdrop-filter: blur(20px); border-right: 1px solid rgba(0, 255, 102, 0.2); }
-        
-        /* Terminal Text Effect */
-        .terminal-text { color: #00FF66; text-shadow: 0 0 5px rgba(0, 255, 102, 0.5); }
-        
-        /* Card Hover */
-        .cyber-card { transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
-        .cyber-card:hover { transform: translateY(-5px); border-color: #00E5FF; box-shadow: 0 10px 30px -10px rgba(0, 229, 255, 0.3); }
 
-        /* Loader */
-        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #00FF66; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body { 
+            background-color: var(--light-blue); 
+            color: var(--text-dark); 
+            overflow: hidden; /* Itazuia scroll wakati wa loading */
+        }
+
+        /* Mfumo wa Kuficha na Kuonyesha Kurasa */
+        .page { display: none; min-height: 100vh; width: 100%; }
+        
+        .active-page { 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        /* ================= 1. FULL SCREEN 3D CUBE LOADER ================= */
+        #loader-page {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000; z-index: 9999;
+            display: block; /* Custom display kwa loader */
+            transition: opacity 0.8s ease-in-out;
+        }
+        
+        .scene {
+            width: 100vw; height: 100vh;
+            perspective: 1200px;
+            position: absolute; top: 0; left: 0;
+            overflow: hidden;
+        }
+        
+        .cube {
+            width: 100%; height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transform: translateZ(-50vw);
+            transition: transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        .cube__face {
+            position: absolute; width: 100vw; height: 100vh;
+            background-size: cover; background-position: center;
+        }
+        
+        /* Zimeenea kote kwenye kioo */
+        .cube__face--front  { transform: rotateY(  0deg) translateZ(50vw); background-image: url('https://cdn.phototourl.com/free/2026-04-28-682fb2dc-8dfd-4dc6-8999-e9867e339fd6.png'); }
+        .cube__face--right  { transform: rotateY( 90deg) translateZ(50vw); background-image: url('https://cdn.phototourl.com/free/2026-04-28-c4d8eb62-a3cd-4a09-9364-2ed01c13bf3b.png'); }
+        .cube__face--back   { transform: rotateY(180deg) translateZ(50vw); background-image: url('https://cdn.phototourl.com/free/2026-04-28-22c4a3fb-8e19-4ed6-b28c-4958168b765f.png'); }
+        .cube__face--left   { transform: rotateY(-90deg) translateZ(50vw); background-image: url('https://cdn.phototourl.com/free/2026-04-28-7014d7b1-5d31-4c89-a498-9322008e3347.png'); }
+
+        /* VIDOTI VYA CYBERSECURITY CHINI KABISA */
+        .cyber-dots-container {
+            position: absolute; bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 10000;
+        }
+        .cyber-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background-color: var(--cyber-cyan);
+            box-shadow: 0 0 10px var(--cyber-cyan);
+            animation: cyberGlow 1.5s infinite alternate;
+        }
+        .cyber-dot:nth-child(2) { animation-delay: 0.5s; }
+        .cyber-dot:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes cyberGlow {
+            0% { background-color: var(--cyber-cyan); box-shadow: 0 0 5px var(--cyber-cyan); transform: scale(1); }
+            50% { background-color: var(--cyber-pink); box-shadow: 0 0 15px var(--cyber-pink); transform: scale(1.3); }
+            100% { background-color: var(--cyber-blue); box-shadow: 0 0 8px var(--cyber-blue); transform: scale(1); }
+        }
+
+        /* ================= 2. AUTHENTICATION (Kujisajili & Kuingia) ================= */
+        #auth-page { padding: 20px; }
+        
+        .auth-container {
+            width: 100%; max-width: 420px; padding: 30px;
+            background: var(--white); border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,86,179,0.1);
+        }
+
+        /* Uhuishaji Mzuri (Fade In & Scale Up) */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .auth-header { text-align: center; margin-bottom: 25px; }
+        .auth-header img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-blue); padding: 3px; }
+        .auth-header h2 { color: var(--primary-blue); font-size: 1.4rem; margin-top: 10px; font-weight: 800; }
+        
+        .form-group { margin-bottom: 18px; position: relative; }
+        .form-group input {
+            width: 100%; padding: 14px 45px 14px 15px;
+            border: 2px solid #e1e8ed; border-radius: 10px; font-size: 0.95rem;
+            outline: none; transition: all 0.3s ease; background: var(--gray);
+        }
+        .form-group input:focus { border-color: var(--primary-blue); background: var(--white); box-shadow: 0 0 8px rgba(0,86,179,0.2); }
+        .form-group .fa-eye, .form-group .fa-eye-slash {
+            position: absolute; right: 15px; top: 16px; color: #888; cursor: pointer; transition: 0.3s;
+        }
+        .form-group .fa-eye:hover, .form-group .fa-eye-slash:hover { color: var(--primary-blue); }
+        .error-msg { color: var(--red); font-size: 0.8rem; display: none; margin-top: 5px; font-weight: 600;}
+        
+        .btn {
+            width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-blue), #003d82);
+            color: var(--white); border: none; border-radius: 10px;
+            font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: 10px;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,86,179,0.3); }
+        
+        .toggle-auth { text-align: center; margin-top: 20px; font-size: 0.95rem; color: #555; }
+        .toggle-auth span { color: var(--primary-blue); cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+        /* ================= 3. USER DASHBOARD ================= */
+        #user-dashboard-page { display: none; flex-direction: column; justify-content: flex-start; align-items: stretch; background: var(--gray); min-height: 100vh;}
+        #user-dashboard-page.active-page { display: flex; }
+        
+        .top-nav {
+            background: var(--primary-blue); color: var(--white); padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .top-nav h3 { font-size: 1.3rem; font-weight: 800; }
+        .menu-btn { cursor: pointer; font-size: 1.5rem; }
+
+        .dashboard-content { padding: 20px; padding-bottom: 90px; width: 100%; max-width: 800px; margin: 0 auto; }
+        .welcome-card {
+            background: var(--white); padding: 20px; border-radius: 12px;
+            border-left: 6px solid var(--primary-blue); margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: var(--white);
+            display: flex; justify-content: space-around; padding: 12px 0;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05); z-index: 100; border-top-left-radius: 20px; border-top-right-radius: 20px;
+        }
+        .nav-item { text-align: center; color: #a0a0a0; cursor: pointer; flex: 1; font-size: 0.8rem; transition: 0.3s;}
+        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 6px; transition: 0.3s;}
+        .nav-item.active { color: var(--primary-blue); font-weight: bold; }
+        .nav-item.active i { transform: translateY(-3px); }
+
+        /* Tabs Content */
+        .tab-content { display: none; animation: popIn 0.4s ease; }
+        .active-tab { display: block; }
+
+        .admin-card { background: var(--white); padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .profile-details p { margin-bottom: 12px; font-size: 1rem; border-bottom: 1px solid #f1f1f1; padding-bottom: 10px; color: #555;}
+        
+        /* ================= 4. ADMIN DASHBOARD ================= */
+        #admin-dashboard-page { display: none; flex-direction: column; justify-content: flex-start; align-items: stretch; background: var(--gray); min-height: 100vh;}
+        #admin-dashboard-page.active-page { display: flex; }
+        
+        .admin-panel { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto;}
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem; background: var(--white); box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden;}
+        table, th, td { border: none; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: var(--primary-blue); color: var(--white); font-weight: 600;}
+
+        /* Alert Box */
+        .custom-alert {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #28a745; color: white; padding: 16px 30px; border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2); display: none; z-index: 2000;
+            font-weight: bold; width: 90%; max-width: 400px; text-align: center;
+        }
+        .custom-alert.error { background: var(--red); }
     </style>
 </head>
-<body class="antialiased selection:bg-cyber-neon selection:text-black bg-cyber-grid">
+<body>
 
-    <!-- Overlay kwa ajili ya Sidebar na Modal -->
-    <div id="overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden transition-opacity" onclick="closeSidebar()"></div>
+    <!-- Alert Box -->
+    <div id="customAlert" class="custom-alert"></div>
 
-    <!-- Sidebar Menu (Kushoto) -->
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 glass-sidebar z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <div class="p-6 flex justify-between items-center border-b border-white/10">
-            <div class="flex items-center gap-3">
-                <img src="https://i.ibb.co/DHJ1J0bv/upload-1777146471103-c2b3f586-jpg.jpg" alt="Logo" class="w-10 h-10 rounded-full border border-cyber-neon shadow-neon">
-                <span class="font-display font-bold text-xl text-white">JAMALI<span class="text-cyber-neon">TECH</span></span>
+    <!-- 1. LOADER YA FULL SCREEN 3D CUBE NA DOTS ZA CYBERSECURITY -->
+    <div id="loader-page">
+        <div class="scene">
+            <div class="cube" id="cube">
+                <!-- Picha Zimeenea Kote -->
+                <div class="cube__face cube__face--front"></div>
+                <div class="cube__face cube__face--right"></div>
+                <div class="cube__face cube__face--back"></div>
+                <div class="cube__face cube__face--left"></div>
             </div>
-            <button onclick="closeSidebar()" class="text-gray-400 hover:text-cyber-neon transition-colors">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
         </div>
-        <div class="p-6 flex flex-col gap-4 flex-grow">
-            <a href="#system" onclick="closeSidebar()" class="flex items-center gap-3 text-gray-300 hover:text-cyber-neon p-2 rounded-lg transition"><i data-lucide="terminal" class="w-5 h-5"></i> The System</a>
-            <a href="#tech" onclick="closeSidebar()" class="flex items-center gap-3 text-gray-300 hover:text-cyber-cyan p-2 rounded-lg transition"><i data-lucide="cpu" class="w-5 h-5"></i> Tech Features</a>
-            <a href="#sports" onclick="closeSidebar()" class="flex items-center gap-3 text-gray-300 hover:text-cyber-gold p-2 rounded-lg transition"><i data-lucide="monitor-play" class="w-5 h-5"></i> Tazama Mpira</a>
-            <hr class="my-2 border-white/5">
-            <button onclick="openModal()" class="w-full bg-transparent border border-cyber-cyan text-cyber-cyan font-bold py-3.5 rounded-lg shadow-cyan flex items-center justify-center gap-2 hover:bg-cyber-cyan hover:text-black transition-all">
-                <i data-lucide="user-plus" class="w-5 h-5"></i> Kujisajili Hapa
-            </button>
-            <a href="https://whatsapp.com/channel/0029VbC7AgJK5cD71vGIpO3h" target="_blank" class="w-full bg-[#25D366] text-white font-bold py-3.5 rounded-lg shadow-[0_0_15px_rgba(37,211,102,0.4)] flex items-center justify-center gap-2 hover:scale-105 transition-all">
-                <i data-lucide="message-circle" class="w-5 h-5"></i> Join Channel
-            </a>
+        <!-- Vidoti vya ki cybersecurity -->
+        <div class="cyber-dots-container">
+            <div class="cyber-dot"></div>
+            <div class="cyber-dot"></div>
+            <div class="cyber-dot"></div>
         </div>
-    </aside>
+    </div>
 
-    <!-- Modal ya Kujisajili -->
-    <div id="regModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="bg-cyber-card border border-cyber-cyan rounded-2xl w-full max-w-md relative z-10 shadow-cyan overflow-hidden transform scale-95 transition-transform" id="modalContent">
-            
-            <div id="formUI" class="p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-2xl font-display font-bold text-cyber-cyan">SYSTEM ACCESS</h3>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-cyber-red transition"><i data-lucide="x" class="w-6 h-6"></i></button>
-                </div>
-                <form onsubmit="submitForm(event)" class="space-y-4 text-sm">
-                    <div>
-                        <label class="block font-semibold text-gray-300 mb-1">Jina (Codename)</label>
-                        <input type="text" required class="w-full px-4 py-3 rounded-lg bg-black/50 border border-white/10 text-white focus:border-cyber-cyan focus:outline-none transition" placeholder="Enter Name">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-300 mb-1">Namba ya Simu</label>
-                        <input type="tel" required class="w-full px-4 py-3 rounded-lg bg-black/50 border border-white/10 text-white focus:border-cyber-cyan focus:outline-none transition" placeholder="07XX XXX XXX">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-300 mb-1">Unahitaji Nini?</label>
-                        <select required class="w-full px-4 py-3 rounded-lg bg-black/50 border border-white/10 text-white focus:border-cyber-cyan focus:outline-none transition">
-                            <option value="" class="text-gray-800">-- Chagua --</option>
-                            <option value="Hacking Tips" class="text-gray-800">Cyber Security / Tips</option>
-                            <option value="Kutatua Simu" class="text-gray-800">Kutatua Matatizo ya Simu</option>
-                            <option value="Apps & Configs" class="text-gray-800">VIP Apps & VPN Configs</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-gray-300 mb-1">Location</label>
-                        <input type="text" required class="w-full px-4 py-3 rounded-lg bg-black/50 border border-white/10 text-white focus:border-cyber-cyan focus:outline-none transition" placeholder="Mkoa">
-                    </div>
-                    <button type="submit" id="submitBtn" class="w-full bg-cyber-cyan text-black font-bold py-3.5 rounded-lg flex items-center justify-center gap-2 hover:bg-white transition mt-6">
-                        <span>INITIATE REQUEST</span>
-                    </button>
-                </form>
+    <!-- 2. AUTHENTICATION (Fomu Safi ya Kujisajili na Kuingia) -->
+    <div id="auth-page" class="page">
+        
+        <!-- Form ya Kujisajili -->
+        <div class="auth-container" id="register-section">
+            <div class="auth-header">
+                <img src="https://cdn.phototourl.com/free/2026-04-28-7ed83baf-dde2-4ded-8e7d-82a2120b93f6.jpg" alt="Jamal Tech Logo">
+                <h2>Jisajili na Jamal Tech</h2>
             </div>
+            <div class="form-group">
+                <input type="text" id="reg-fullname" placeholder="Majina Kamili (Mfn: Mr Salehe Tech)">
+                <div class="error-msg" id="err-fullname">Tafadhali jaza majina yako kamili</div>
+            </div>
+            <div class="form-group">
+                <input type="text" id="reg-username" placeholder="Username (Mfn: salehe tech01)">
+                <div class="error-msg" id="err-username">Tafadhali weka username</div>
+            </div>
+            <div class="form-group">
+                <input type="number" id="reg-phone" placeholder="Namba ya Simu (Tarakimu 10 tu)">
+                <div class="error-msg" id="err-phone">Namba lazima iwe na tarakimu 10 tu!</div>
+            </div>
+            <div class="form-group">
+                <input type="email" id="reg-email" placeholder="Email yako">
+                <div class="error-msg" id="err-email">Tafadhali weka email sahihi</div>
+            </div>
+            <div class="form-group">
+                <input type="password" id="reg-password" placeholder="Weka Password">
+                <i class="fa-solid fa-eye" onclick="togglePassword('reg-password', this)"></i>
+                <div class="error-msg" id="err-password">Password inahitajika</div>
+            </div>
+            <div class="form-group">
+                <input type="password" id="reg-confirm" placeholder="Thibitisha Password">
+                <i class="fa-solid fa-eye" onclick="togglePassword('reg-confirm', this)"></i>
+                <div class="error-msg" id="err-confirm">Password hazifanani!</div>
+            </div>
+            <button class="btn" onclick="registerUser()">Jisajili Sasa</button>
+            <div class="toggle-auth">
+                Tayari una akaunti? <span onclick="switchAuth('login')">Ingia Hapa</span>
+            </div>
+        </div>
 
-            <!-- Ujumbe wa Success -->
-            <div id="successUI" class="p-10 text-center hidden">
-                <div class="w-20 h-20 bg-cyber-neon/10 border border-cyber-neon rounded-full flex items-center justify-center mx-auto mb-4 text-cyber-neon animate-pulse">
-                    <i data-lucide="shield-check" class="w-10 h-10"></i>
-                </div>
-                <h3 class="text-2xl font-display font-bold text-cyber-neon mb-2">ACCESS GRANTED</h3>
-                <p class="text-gray-400 font-medium leading-relaxed">
-                    Ombi lako limekubaliwa kikamilifu kwenye system. Tutaendelea kuwasiliana na wewe. Karibu kwenye upande wa Tech Masters!
-                </p>
-                <button onclick="closeModal()" class="mt-8 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold py-3 px-8 rounded-lg transition">Close Terminal</button>
+        <!-- Form ya Kuingia (Bila mifano kwenye Placeholders) -->
+        <div class="auth-container" id="login-section" style="display: none;">
+            <div class="auth-header">
+                <img src="https://cdn.phototourl.com/free/2026-04-28-7ed83baf-dde2-4ded-8e7d-82a2120b93f6.jpg" alt="Jamal Tech Logo">
+                <h2>Ingia Kwenye Akaunti</h2>
+            </div>
+            <div class="form-group">
+                <!-- Hamna tena mfano hapa -->
+                <input type="text" id="login-username" placeholder="Username yako">
+                <div class="error-msg" id="err-log-user">Tafadhali weka username</div>
+            </div>
+            <div class="form-group">
+                <!-- Hamna tena mfano hapa -->
+                <input type="password" id="login-password" placeholder="Weka Password yako">
+                <i class="fa-solid fa-eye" onclick="togglePassword('login-password', this)"></i>
+                <div class="error-msg" id="err-log-pass">Tafadhali weka password</div>
+            </div>
+            <button class="btn" onclick="loginUser()">Ingia Sasa</button>
+            <div class="toggle-auth">
+                Huna akaunti? <span onclick="switchAuth('register')">Jisajili Hapa</span>
             </div>
         </div>
     </div>
 
-    <!-- Navbar ya Juu -->
-    <nav class="fixed top-0 w-full glass-dark z-30 transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()" class="p-2 bg-white/5 border border-white/10 rounded-lg hover:bg-cyber-cyan hover:text-black hover:border-cyber-cyan transition-colors text-white">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
-                    <a href="#" class="flex items-center gap-3">
-                        <img src="https://i.ibb.co/DHJ1J0bv/upload-1777146471103-c2b3f586-jpg.jpg" alt="Jamali Tech" class="w-10 h-10 rounded-full border-2 border-cyber-cyan shadow-cyan">
-                        <span class="text-xl font-display font-bold tracking-tight text-white hidden sm:block">JAMALI<span class="text-cyber-cyan">TECH</span></span>
-                    </a>
-                </div>
-                
-                <div class="flex gap-4">
-                    <a href="#sports" class="hidden sm:flex bg-cyber-red/20 border border-cyber-red text-cyber-red px-5 py-2 rounded-lg font-bold transition-all shadow-red items-center gap-2 text-sm hover:bg-cyber-red hover:text-white">
-                        <i data-lucide="play-circle" class="w-4 h-4"></i> Live Sports
-                    </a>
-                    <a href="https://whatsapp.com/channel/0029VbC7AgJK5cD71vGIpO3h" target="_blank" class="bg-[#25D366] text-black px-5 py-2 rounded-lg font-bold transition-all shadow-[0_0_10px_rgba(37,211,102,0.5)] flex items-center gap-2 text-sm hover:scale-105">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i> Channel
-                    </a>
-                </div>
-            </div>
+    <!-- 3. USER DASHBOARD -->
+    <div id="user-dashboard-page" class="page">
+        <div class="top-nav">
+            <h3>Jamal Tech</h3>
+            <i class="fa-solid fa-bars menu-btn"></i>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="pt-36 pb-16 px-4 relative flex flex-col items-center justify-center min-h-[90vh]">
-        <!-- Glow Effects -->
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyber-cyan/10 rounded-full blur-[100px] pointer-events-none"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyber-neon/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div class="max-w-4xl mx-auto text-center relative z-10" data-aos="zoom-in">
-            <img src="https://i.ibb.co/DHJ1J0bv/upload-1777146471103-c2b3f586-jpg.jpg" alt="Logo" class="w-24 h-24 mx-auto rounded-full border-2 border-cyber-neon shadow-neon mb-6">
-            
-            <div class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-cyber-neon/10 text-cyber-neon font-bold text-sm mb-6 border border-cyber-neon/30">
-                <span class="w-2 h-2 rounded-full bg-cyber-neon animate-pulse"></span> ONLINE & ACTIVE
-            </div>
-            
-            <h1 class="text-5xl md:text-7xl font-display font-black leading-tight text-white mb-6 uppercase">
-                Welcome To The <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-cyber-neon">Tech Empire</span>
-            </h1>
-            
-            <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-                Hii sio sehemu ya kawaida. Ni kitovu cha Tech Masters. Jifunze, share, na uwe sehemu ya watu wanaotawala ulimwengu wa dijitali.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row gap-5 justify-center">
-                <a href="#system" class="bg-transparent border-2 border-cyber-neon text-cyber-neon hover:bg-cyber-neon hover:text-black px-8 py-4 rounded-lg font-display font-bold tracking-widest transition-all shadow-neon flex items-center justify-center gap-2 uppercase">
-                    Enter System <i data-lucide="chevron-right"></i>
-                </a>
-                <a href="#sports" class="bg-cyber-red text-white hover:bg-red-700 px-8 py-4 rounded-lg font-display font-bold tracking-widest transition-all shadow-red flex items-center justify-center gap-2 uppercase">
-                    Watch Live Sports <i data-lucide="monitor-play"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- The System (Hacker Theme) -->
-    <section id="system" class="py-16 px-4">
-        <div class="max-w-4xl mx-auto bg-black/60 border border-white/10 rounded-xl p-6 md:p-10 font-mono shadow-2xl relative overflow-hidden" data-aos="fade-up">
-            <!-- Glitch decoration -->
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyber-neon to-transparent opacity-50"></div>
-            
-            <div class="text-center mb-8">
-                <h2 class="text-cyber-cyan text-xl md:text-2xl font-bold">꧁༒☬ JAMALITECH ☬༒꧂</h2>
-                <div class="text-gray-500 text-xs mt-2">━━━━━━━━━━━━━━━━━━━</div>
-            </div>
-
-            <div class="space-y-6 text-sm md:text-base text-gray-300">
-                <div>
-                    <p class="text-cyber-red font-bold text-lg">💀 STOP SCROLLING… SOMETHING BROUGHT YOU HERE</p>
-                    <p class="mt-2">🧠 Hii sio channel ya kawaida… Ni SYSTEM ya watu wanaotaka kuwa mbele ya wengine.</p>
+        <div class="dashboard-content">
+            <div id="tab-home" class="tab-content active-tab">
+                <div class="welcome-card">
+                    <h2 style="color: var(--primary-blue);" id="welcome-msg">Karibu Jamal Tech</h2>
+                    <p style="margin-top: 8px; font-size: 0.95rem; color: #555;" id="notification-msg">Tuna furaha kuwa nawe hapa.</p>
                 </div>
-
-                <div class="bg-white/5 p-4 rounded border border-white/10">
-                    <p class="text-white font-bold mb-2">☠️ CHOOSE YOUR SIDE:</p>
-                    <p>❌ Kuwa mtumiaji wa kawaida</p>
-                    <p class="text-cyber-neon font-bold mt-1">✔️ Au kuwa TECH MASTER</p>
-                </div>
-
-                <div>
-                    <p class="text-cyber-cyan font-bold text-lg mb-2">⚡ INSIDE THE SYSTEM:</p>
-                    <ul class="space-y-2">
-                        <li><span class="text-cyber-neon">☠️</span> Hacking tips & powerful tricks</li>
-                        <li><span class="text-cyber-neon">🔥</span> Tips za simu & apps (hidden features)</li>
-                        <li><span class="text-cyber-neon">🔐</span> Cyber Security (Linda data zako ⚡)</li>
-                        <li><span class="text-cyber-neon">🤖</span> Auto commands 🔥</li>
-                        <li><span class="text-cyber-neon">🌐</span> VPN Configs (Unlimited access 🚀)</li>
-                        <li><span class="text-cyber-neon">📲</span> Apps mpya + secret updates</li>
-                    </ul>
-                </div>
-
-                <div class="bg-cyber-red/10 border border-cyber-red/30 p-4 rounded text-center">
-                    <p class="text-white">⏳ <span class="text-cyber-red font-bold">REALITY CHECK:</span> Wakati wewe unasita… Wengine tayari wako LEVEL nyingine.</p>
-                    <p class="italic text-gray-400 mt-2">💬 “You either learn the system… or the system controls you.”</p>
-                </div>
-
-                <div class="text-center pt-4">
-                    <p class="text-white font-bold text-lg mb-2">🔥 FINAL CALL: Usibaki nyuma… hii ndio nafasi yako</p>
-                    <a href="https://whatsapp.com/channel/0029VbC7AgJK5cD71vGIpO3h" target="_blank" class="inline-block terminal-text font-bold text-xl hover:text-white transition">👉 JOIN • SHARE • DOMINATE 👈</a>
-                    <p class="mt-4 text-cyber-red font-bold tracking-widest">💀 ONLY THE HUNGRY SURVIVE 💀</p>
+                <h3 style="margin-bottom: 10px; color: #333;">Taarifa Mpya (Notifications)</h3>
+                <div class="admin-card" id="user-posts">
+                    <p>Hakuna taarifa mpya kwa sasa.</p>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Tech Features (Friendly/General Theme) -->
-    <section id="tech" class="py-20 px-4 border-t border-white/5 bg-cyber-card/30">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-cyber-cyan font-display tracking-widest uppercase text-sm mb-2">Features</h2>
-                <h3 class="text-3xl md:text-4xl font-bold text-white mb-4">Ulimwengu wa Teknolojia Kiganjani</h3>
+            <div id="tab-video" class="tab-content">
+                <h2 style="margin-bottom: 15px;">Video & Movies</h2>
+                <div class="admin-card" style="text-align: center; color: #666;">
+                    <i class="fa-solid fa-film" style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 10px;"></i>
+                    <p>Sehemu ya kuangalia na kupakua Video na Movies itakuja hivi karibuni!</p>
+                </div>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="cyber-card bg-cyber-card rounded-xl p-8" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-12 h-12 rounded-lg bg-white/5 text-cyber-neon flex items-center justify-center mb-6 border border-cyber-neon/30">
-                        <i data-lucide="smartphone" class="w-6 h-6"></i>
+            <div id="tab-bot" class="tab-content">
+                <h2 style="margin-bottom: 15px;">Jamal AI Bot</h2>
+                <div class="admin-card" style="text-align: center; color: #666;">
+                    <i class="fa-solid fa-robot" style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 10px;"></i>
+                    <p>Chat na AI bot yetu inatengenezwa. Kaa mkao wa kula!</p>
+                </div>
+            </div>
+
+            <div id="tab-account" class="tab-content">
+                <h2 style="margin-bottom: 15px;">Akaunti Yangu</h2>
+                <div class="admin-card profile-details">
+                    <p><strong>Jina Kamili:</strong> <span id="prof-name"></span></p>
+                    <p><strong>Username:</strong> <span id="prof-user"></span></p>
+                    <p><strong>Namba ya Simu:</strong> <span id="prof-phone"></span></p>
+                    <p><strong>Email Yako:</strong> <span id="prof-email"></span></p>
+                </div>
+                <h3 style="margin-bottom: 10px;">Badilisha Password</h3>
+                <div class="admin-card">
+                    <div class="form-group">
+                        <input type="password" id="new-password" placeholder="Weka Password Mpya">
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Tips & Tricks za Simu</h3>
-                    <p class="text-gray-400 text-sm">Gundua uwezo uliojificha wa simu yako na mbinu fupi za kurahisisha maisha (Life hacks).</p>
+                    <button class="btn" onclick="changePassword()">Hifadhi Password</button>
                 </div>
-                <!-- Card 2 -->
-                <div class="cyber-card bg-cyber-card rounded-xl p-8" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-12 h-12 rounded-lg bg-white/5 text-cyber-cyan flex items-center justify-center mb-6 border border-cyber-cyan/30">
-                        <i data-lucide="wrench" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Solutions za Matatizo</h3>
-                    <p class="text-gray-400 text-sm">Simu inastuck? Network mbovu? Storage imejaa? Hapa unapata utatuzi wa haraka.</p>
+                <button class="btn" style="background: var(--red); margin-top: 10px;" onclick="logout()">Ondoka (Logout)</button>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('home', this)"><i class="fa-solid fa-house"></i>Home</div>
+            <div class="nav-item" onclick="switchTab('video', this)"><i class="fa-solid fa-play"></i>Video</div>
+            <div class="nav-item" onclick="switchTab('bot', this)"><i class="fa-solid fa-robot"></i>Bot</div>
+            <div class="nav-item" onclick="switchTab('account', this)"><i class="fa-solid fa-user"></i>Account</div>
+        </div>
+    </div>
+
+    <!-- 4. ADMIN DASHBOARD (Siri ya Jamal Empire) -->
+    <div id="admin-dashboard-page" class="page">
+        <div class="top-nav" style="background: #111;">
+            <h3>Admin Panel | Jamal Empire</h3>
+            <i class="fa-solid fa-sign-out-alt menu-btn" onclick="logout()" title="Ondoka"></i>
+        </div>
+        <div class="admin-panel">
+            <h2 style="margin-bottom: 15px;">Watumiaji Waliojisajili</h2>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Jina Kamili</th>
+                            <th>Username</th>
+                            <th>Simu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-user-list">
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 style="margin-top: 30px; margin-bottom: 15px;">Tuma Notification Kwa Wote</h2>
+            <div class="admin-card">
+                <div class="form-group">
+                    <textarea id="admin-post" rows="4" style="width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; resize: none;" placeholder="Andika taarifa mpya hapa..."></textarea>
                 </div>
-                <!-- Card 3 -->
-                <div class="cyber-card bg-cyber-card rounded-xl p-8" data-aos="fade-up" data-aos-delay="300">
-                    <div class="w-12 h-12 rounded-lg bg-white/5 text-cyber-gold flex items-center justify-center mb-6 border border-cyber-gold/30">
-                        <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Apps Bora & Matumizi</h3>
-                    <p class="text-gray-400 text-sm">Tunakuletea na kukufundisha apps bora kabisa ambazo lazima uwe nazo kwenye simu yako.</p>
-                </div>
+                <button class="btn" style="background: #111;" onclick="sendPost()"><i class="fa-solid fa-paper-plane"></i> Tuma Post</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- LIVE SPORTS HUB -->
-    <section id="sports" class="py-20 px-4 border-t border-cyber-red/20 relative bg-gradient-to-b from-black to-cyber-card">
-        <div class="max-w-5xl mx-auto text-center" data-aos="zoom-in">
-            <div class="inline-flex items-center gap-2 bg-cyber-red text-white px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest mb-6 animate-pulse">
-                <i data-lucide="radio" class="w-4 h-4"></i> Live Streaming
-            </div>
-            
-            <h2 class="text-4xl md:text-5xl font-display font-black text-white mb-6 uppercase">
-                SPORTS HUB YA BURE
-            </h2>
-            <p class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
-                Tazama mechi zote za nchi zote duniani! Ligi kubwa zote (EPL, UCL, La Liga), michezo ya Kikapu, Netball, na Live Scores za dakika kwa dakika bila malipo.
-            </p>
-            
-            <a href="http://www.fawanews.sc/index.html" target="_blank" class="inline-flex items-center gap-3 bg-transparent border-2 border-cyber-gold text-cyber-gold hover:bg-cyber-gold hover:text-black font-display font-bold text-xl px-10 py-5 rounded-lg shadow-cyan transition-all uppercase tracking-wider">
-                <i data-lucide="play-circle" class="w-6 h-6"></i> Bofya Hapa Kutazama
-            </a>
-        </div>
-    </section>
-
-    <!-- Animated Counters -->
-    <section class="py-16 px-4 border-t border-white/5 relative z-10 bg-cyber-card/50">
-        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-around items-center gap-10">
-            <div class="text-center">
-                <h2 class="text-4xl md:text-6xl font-display font-black text-cyber-cyan mb-2">
-                    <span class="counter" data-target="20000">0</span>+
-                </h2>
-                <p class="text-gray-400 font-bold uppercase tracking-widest text-sm">System Followers</p>
-            </div>
-            <div class="hidden md:block w-px h-16 bg-white/10"></div>
-            <div class="text-center">
-                <h2 class="text-4xl md:text-6xl font-display font-black text-cyber-neon mb-2">
-                    <span class="counter" data-target="100000">0</span>+
-                </h2>
-                <p class="text-gray-400 font-bold uppercase tracking-widest text-sm">Tech Masters Trained</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-black border-t border-white/10 pt-16 pb-24 px-4">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-            <div class="flex items-center gap-3">
-                <img src="https://i.ibb.co/DHJ1J0bv/upload-1777146471103-c2b3f586-jpg.jpg" alt="Jamali Tech" class="w-12 h-12 rounded-full border border-white/20">
-                <div>
-                    <span class="text-xl font-display font-bold tracking-tight text-white block">JAMALI<span class="text-cyber-cyan">TECH</span></span>
-                    <span class="text-xs text-gray-500 uppercase tracking-widest">The Empire</span>
-                </div>
-            </div>
-            
-            <div class="text-gray-400 font-mono text-sm">
-                <p>📞 Admin Support: <span class="text-cyber-neon">+255 798 172 655</span></p>
-                <p class="mt-2">&copy; 2024 JAMALI TECH EMPIRE. All Systems Go.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Floating WhatsApp Help Button (Fixed Bottom-Right) -->
-    <a href="https://wa.me/255798172655" target="_blank" class="fixed bottom-6 right-6 z-50 flex items-center justify-center group">
-        <div class="absolute inset-0 bg-[#25D366] rounded-full blur-md opacity-50 group-hover:opacity-100 animate-pulse transition-opacity"></div>
-        <div class="relative bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(37,211,102,0.6)] transform group-hover:scale-110 transition-transform">
-            <i data-lucide="message-circle" class="w-7 h-7"></i>
-        </div>
-        <!-- Tooltip -->
-        <span class="absolute right-16 bg-black text-white text-xs font-bold px-3 py-1.5 rounded-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
-            Msaada / Admin
-        </span>
-    </a>
-
-    <!-- Scripts Zote -->
+    <!-- ================= JAVASCRIPT ================= -->
     <script>
-        lucide.createIcons();
-        AOS.init({ duration: 800, once: true, offset: 50 });
+        // Database ya LocalStorage
+        let usersDB = JSON.parse(localStorage.getItem('jamalTechUsers')) ||[];
+        let currentUser = null;
+        let globalPosts = JSON.parse(localStorage.getItem('jamalTechPosts')) ||["Karibu kwenye App mpya ya kisasa ya Jamal Tech!"];
 
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 20) {
-                nav.classList.add('shadow-lg', 'bg-black/90');
-                nav.classList.remove('glass-dark');
-            } else {
-                nav.classList.remove('shadow-lg', 'bg-black/90');
-                nav.classList.add('glass-dark');
-            }
-        });
+        // 1. FULL SCREEN 3D CUBE LOGIC
+        let cube = document.getElementById('cube');
+        let currentAngle = 0;
+        let rotations = 0;
 
-        // Sidebar Functions
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('-translate-x-full');
-            if(sidebar.classList.contains('-translate-x-full')) {
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-            } else {
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-            }
-        }
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.add('-translate-x-full');
-            const overlay = document.getElementById('overlay');
-            overlay.classList.add('opacity-0');
-            setTimeout(() => overlay.classList.add('hidden'), 300);
-        }
-
-        // Modal Functions
-        function openModal() {
-            closeSidebar(); 
-            const modal = document.getElementById('regModal');
-            const content = document.getElementById('modalContent');
-            modal.classList.remove('hidden');
-            setTimeout(() => content.classList.remove('scale-95'), 10);
-        }
-
-        function closeModal() {
-            const content = document.getElementById('modalContent');
-            content.classList.add('scale-95');
-            setTimeout(() => document.getElementById('regModal').classList.add('hidden'), 200);
-        }
-
-        // Form Automation Logic
-        function submitForm(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<div class="loader"></div> <span class="text-white">PROCESSING...</span>';
-            btn.classList.add('opacity-70', 'cursor-not-allowed');
+        function rotateCube() {
+            currentAngle -= 90;
+            // translateZ(-50vw) inaweka focus sawa kulingana na upana wa kioo
+            cube.style.transform = `translateZ(-50vw) rotateY(${currentAngle}deg)`;
+            rotations++;
             
-            setTimeout(() => {
-                document.getElementById('formUI').classList.add('hidden');
-                document.getElementById('successUI').classList.remove('hidden');
+            // Picha ya nne (ya mwisho) inapofika
+            if(rotations === 3) {
+                clearInterval(cubeInterval);
                 
+                // Ipe sekunde 4 ionekane, halafu ififie na kuruhusu scroll
                 setTimeout(() => {
-                    e.target.reset();
-                    btn.innerHTML = '<span>INITIATE REQUEST</span>';
-                    btn.classList.remove('opacity-70', 'cursor-not-allowed');
-                    document.getElementById('formUI').classList.remove('hidden');
-                    document.getElementById('successUI').classList.add('hidden');
-                }, 8000); 
-            }, 2000);
+                    let loader = document.getElementById('loader-page');
+                    loader.style.opacity = '0'; // Inafifia taratibu
+                    
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        document.body.style.overflow = 'auto'; // Ruhusu kusogeza chini/juu form
+                        
+                        let authPage = document.getElementById('auth-page');
+                        authPage.classList.add('active-page');
+                        authPage.style.animation = "popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards"; 
+                    }, 800);
+                }, 4000);
+            }
+        }
+        // Anzisha kuzungusha kila baada ya sekunde 4
+        let cubeInterval = setInterval(rotateCube, 4000);
+
+        // 2. TOGGLE PASSWORD
+        function togglePassword(inputId, icon) {
+            let input = document.getElementById(inputId);
+            if(input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                icon.style.color = "var(--primary-blue)";
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                icon.style.color = "#888";
+            }
         }
 
-        // Animated Counters
-        const counters = document.querySelectorAll('.counter');
-        const speed = 100;
-        
-        const counterObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    const updateCount = () => {
-                        const target = +entry.target.getAttribute('data-target');
-                        const count = +entry.target.innerText.replace(/,/g, '');
-                        const inc = target / speed;
-                        
-                        if(count < target) {
-                            entry.target.innerText = Math.ceil(count + inc).toLocaleString();
-                            setTimeout(updateCount, 30);
-                        } else {
-                            entry.target.innerText = target.toLocaleString();
-                        }
-                    };
-                    updateCount();
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-        
-        counters.forEach(counter => {
-            counterObserver.observe(counter);
-        });
+        // 3. SWITCH FORMS
+        function switchAuth(type) {
+            let authPage = document.getElementById('auth-page');
+            authPage.style.animation = "none"; 
+            setTimeout(() => authPage.style.animation = "popIn 0.5s ease forwards", 10);
+            
+            if(type === 'login') {
+                document.getElementById('register-section').style.display = 'none';
+                document.getElementById('login-section').style.display = 'block';
+            } else {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('register-section').style.display = 'block';
+            }
+        }
+
+        function showAlert(msg, isError = false) {
+            let alertBox = document.getElementById('customAlert');
+            alertBox.innerText = msg;
+            alertBox.className = isError ? 'custom-alert error' : 'custom-alert';
+            alertBox.style.display = 'block';
+            setTimeout(() => { alertBox.style.display = 'none'; }, 4000);
+        }
+
+        // 4. REGISTRATION LOGIC
+        function registerUser() {
+            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+            
+            let name = document.getElementById('reg-fullname').value.trim();
+            let username = document.getElementById('reg-username').value.trim();
+            let phone = document.getElementById('reg-phone').value.trim();
+            let email = document.getElementById('reg-email').value.trim();
+            let pass = document.getElementById('reg-password').value;
+            let confPass = document.getElementById('reg-confirm').value;
+
+            let hasError = false;
+
+            if(!name) { document.getElementById('err-fullname').style.display = 'block'; hasError = true; }
+            if(!email) { document.getElementById('err-email').style.display = 'block'; hasError = true; }
+            if(!pass) { document.getElementById('err-password').style.display = 'block'; hasError = true; }
+            if(pass !== confPass) { document.getElementById('err-confirm').style.display = 'block'; hasError = true; }
+            if(!/^\d{10}$/.test(phone)) { document.getElementById('err-phone').style.display = 'block'; hasError = true; }
+
+            let userExists = usersDB.find(u => u.username.toLowerCase() === username.toLowerCase() || u.phone === phone);
+            if(userExists) {
+                showAlert('Akaunti hii imeshatumika. Tafadhali ingia kwenye akaunti yako', true);
+                document.getElementById('err-username').style.display = 'block';
+                hasError = true;
+            }
+
+            if(hasError) return;
+
+            let newUser = { name, username, phone, email, pass };
+            usersDB.push(newUser);
+            localStorage.setItem('jamalTechUsers', JSON.stringify(usersDB));
+
+            showAlert(`Hongera ${name} umefanikiwa kujisajili na Jamal Tech!`);
+            
+            document.getElementById('login-username').value = username;
+            document.getElementById('login-password').value = pass;
+            switchAuth('login');
+        }
+
+        // 5. LOGIN LOGIC (Kufanya Kazi asilimia 100 kwa Admin pia)
+        function loginUser() {
+            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+            
+            let user = document.getElementById('login-username').value.trim();
+            let pass = document.getElementById('login-password').value;
+
+            if(!user || !pass) {
+                showAlert('Tafadhali jaza nafasi zote!', true);
+                return;
+            }
+
+            // *** ADMIN LOGIN LOGIC INAFANYA KAZI ***
+            if(user === "jamali empire" && pass === "7070") {
+                showAlert("Karibu Admin Jamal Empire!");
+                loadAdminDashboard();
+                document.getElementById('auth-page').classList.remove('active-page');
+                document.getElementById('admin-dashboard-page').classList.add('active-page');
+                return;
+            }
+
+            // USER LOGIN YA KAWAIDA
+            let foundUser = usersDB.find(u => u.username === user && u.pass === pass);
+            if(foundUser) {
+                currentUser = foundUser;
+                showAlert(`Karibu tena, ${foundUser.name}!`);
+                loadUserDashboard();
+                document.getElementById('auth-page').classList.remove('active-page');
+                document.getElementById('user-dashboard-page').classList.add('active-page');
+            } else {
+                document.getElementById('err-log-pass').style.display = 'block';
+                showAlert("Ujumbe mwekundu: Akaunti haipo au taarifa si sahihi!", true);
+            }
+        }
+
+        // 6. USER DASHBOARD FUNCTIONS
+        function loadUserDashboard() {
+            document.getElementById('welcome-msg').innerText = `Karibu Jamal Tech, ${currentUser.name}`;
+            document.getElementById('notification-msg').innerText = "Notification mpya zinakusubiri.";
+            
+            document.getElementById('prof-name').innerText = currentUser.name;
+            document.getElementById('prof-user').innerText = currentUser.username;
+            document.getElementById('prof-phone').innerText = currentUser.phone;
+            document.getElementById('prof-email').innerText = currentUser.email;
+
+            // Kuweka Notifications/Posts zote
+            let postsHtml = globalPosts.map(p => `
+                <div style="background: #f9fbff; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary-blue); margin-bottom: 12px; font-size: 0.95rem; color: #444;">
+                    ${p}
+                </div>
+            `).join('');
+            document.getElementById('user-posts').innerHTML = postsHtml;
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active-tab'));
+            document.getElementById('tab-' + tabId).classList.add('active-tab');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function changePassword() {
+            let newPass = document.getElementById('new-password').value;
+            if(newPass.length < 4) {
+                showAlert("Password mpya ni fupi mno!", true); return;
+            }
+            let userIndex = usersDB.findIndex(u => u.username === currentUser.username);
+            usersDB[userIndex].pass = newPass;
+            localStorage.setItem('jamalTechUsers', JSON.stringify(usersDB));
+            currentUser.pass = newPass;
+            
+            document.getElementById('new-password').value = "";
+            showAlert("Password imebadilishwa kikamilifu (Automatic)!");
+        }
+
+        // 7. ADMIN DASHBOARD FUNCTIONS
+        function loadAdminDashboard() {
+            let tbody = document.getElementById('admin-user-list');
+            tbody.innerHTML = "";
+            if(usersDB.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='3'>Hakuna watumiaji waliyojisajili bado.</td></tr>";
+            } else {
+                usersDB.forEach(u => {
+                    tbody.innerHTML += `<tr>
+                        <td><strong>${u.name}</strong></td>
+                        <td style="color: var(--primary-blue);">${u.username}</td>
+                        <td>${u.phone}</td>
+                    </tr>`;
+                });
+            }
+        }
+
+        function sendPost() {
+            let postText = document.getElementById('admin-post').value.trim();
+            if(!postText) {
+                showAlert("Tafadhali andika ujumbe kwanza!", true); return;
+            }
+            
+            globalPosts.unshift(postText); 
+            localStorage.setItem('jamalTechPosts', JSON.stringify(globalPosts));
+            document.getElementById('admin-post').value = "";
+            showAlert("Notification/Post imetumwa kwa watumiaji wote kikamilifu!");
+        }
+
+        // 8. LOGOUT
+        function logout() {
+            currentUser = null;
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active-page'));
+            let authPage = document.getElementById('auth-page');
+            authPage.classList.add('active-page');
+            authPage.style.animation = "popIn 0.5s ease forwards";
+            document.getElementById('login-password').value = "";
+            switchAuth('login');
+        }
     </script>
 </body>
 </html>
